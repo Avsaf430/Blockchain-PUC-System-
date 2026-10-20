@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUC Centre Portal | PUC Secure</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="brand" href="index.html">
+            <span class="brand-icon">✓</span>
+            <span>
+                <strong>PUC Secure</strong>
+                <small>National Blockchain Certificate Portal</small>
+            </span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <button type="button" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+            <a href="verify.html" class="btn btn-outline" style="padding: 8px 14px; font-size: 13px;">
+                🔍 Verify Certificate
+            </a>
+            <button type="button" class="btn btn-outline" id="logoutBtn" style="padding: 8px 14px; font-size: 13px;">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="dashboard">
+
+        <!-- Heading & Portal Indicator -->
+        <section class="dashboard-heading">
+            <div>
+                <span class="eyebrow">AUTHORIZED EMISSION TESTING STATION</span>
+                <h1 id="centreHeading">
+                    PUC Centre Dashboard
+                </h1>
+                <p class="muted">
+                    Issue statutory Pollution Under Control certificates and record on-chain emissions data.
+                </p>
+            </div>
+
+            <span class="pill success">Station ID: CENTRE001</span>
+        </section>
+
+        <!-- Blockchain Node Status Panel -->
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>Blockchain Node & Wallet Connection</h2>
+                <span class="pill">Ganache Ethereum</span>
+            </div>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <span>Network</span>
+                    <strong class="stat-label" id="networkStatus">Ganache (1337)</strong>
+                </article>
+
+                <article class="stat-card">
+                    <span>Connected Centre Wallet</span>
+                    <strong class="stat-label" id="walletStatus">Not Connected</strong>
+                </article>
+
+                <article class="stat-card">
+                    <span>Smart Contract Status</span>
+                    <strong class="stat-label" id="contractStatus">—</strong>
+                </article>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
+                <button type="button" class="btn btn-primary" id="connectWalletBtn">
+                    🦊 Connect Centre MetaMask Wallet
+                </button>
+                <p class="muted small" id="walletNote" style="margin: 0;">
+                    Connect authorized wallet to enable on-chain certificate minting.
+                </p>
+            </div>
+        </section>
+
+        <!-- Certificate Issuance Form -->
+        <section class="panel">
+            <h2>Issue Statutory PUC Certificate</h2>
+            <p class="muted" style="margin-bottom: 20px;">
+                Enter verified vehicle particulars and gas analyzer emissions readings.
+            </p>
+
+            <form id="issueCertificateForm" class="form-grid">
+
+                <!-- Section A Subheader -->
+                <div style="grid-column: 1 / -1; margin-top: 4px; margin-bottom: 4px; padding-bottom: 6px; border-bottom: 1.5px solid var(--border-light); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--primary);">
+                    1. Vehicle & Owner Particulars
+                </div>
+
+                <!-- Vehicle Reg. Number -->
+                <div>
+                    <label for="vehicleNumber">Vehicle Registration Number *</label>
+                    <input
+                        type="text"
+                        id="vehicleNumber"
+                        name="vehicleNumber"
+                        placeholder="e.g. MH02AB1234"
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+
+                <!-- Owner Name -->
+                <div>
+                    <label for="ownerName">Registered Owner Name *</label>
+                    <input
+                        type="text"
+                        id="ownerName"
+                        name="ownerName"
+                        placeholder="e.g. Demo User"
+                        autocomplete="off"
+                        required
+                    >
+                </div>
+
+                <!-- Owner Wallet -->
+                <div>
+                    <label for="ownerWallet">Owner Ethereum Wallet Address</label>
+                    <input
+                        type="text"
+                        id="ownerWallet"
+                        name="ownerWallet"
+                        placeholder="0x... (optional)"
+                        autocomplete="off"
+                    >
+                </div>
+
+                <!-- Fuel Type -->
+                <div>
+                    <label for="fuelType">Fuel Type *</label>
+                    <select id="fuelType" name="fuelType" required>
+                        <option value="">Select Fuel Category</option>
+                        <option value="Petrol">Petrol</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="CNG">CNG</option>
+                        <option value="Electric">Electric</option>
+                    </select>
+                </div>
+
+                <!-- Vehicle Type -->
+                <div>
+                    <label for="vehicleType">Vehicle Class *</label>
+                    <select id="vehicleType" name="vehicleType" required>
+                        <option value="">Select Vehicle Class</option>
+                        <option value="Car">Car (Light Motor Vehicle)</option>
+                        <option value="Bike">Motorcycle / Scooter (2-Wheeler)</option>
+                        <option value="Auto">Auto Rickshaw (3-Wheeler)</option>
+                        <option value="Truck">Heavy Goods Vehicle (Truck)</option>
+                        <option value="Bus">Passenger Bus</option>
+                    </select>
+                </div>
+
+                <!-- Section B Subheader -->
+                <div style="grid-column: 1 / -1; margin-top: 18px; margin-bottom: 4px; padding-bottom: 6px; border-bottom: 1.5px solid var(--border-light); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--primary);">
+                    2. Gas Analyzer Emissions Readings & Compliance
+                </div>
+
+                <!-- Test Date -->
+                <div>
+                    <label for="testDate">Emissions Test Date *</label>
+                    <input
+                        type="date"
+                        id="testDate"
+                        name="testDate"
+                        required
+                    >
+                </div>
+
+                <!-- Valid Until -->
+                <div>
+                    <label for="validUntil">Certificate Valid Until *</label>
+                    <input
+                        type="date"
+                        id="validUntil"
+                        name="validUntil"
+                        required
+                    >
+                </div>
+
+                <!-- CO Reading -->
+                <div>
+                    <label for="co">Carbon Monoxide (CO % vol) *</label>
+                    <input
+                        type="number"
+                        id="co"
+                        name="co"
+                        placeholder="e.g. 0.25"
+                        step="0.01"
+                        min="0"
+                        required
+                    >
+                </div>
+
+                <!-- HC Reading -->
+                <div>
+                    <label for="hc">Hydrocarbons (HC ppm) *</label>
+                    <input
+                        type="number"
+                        id="hc"
+                        name="hc"
+                        placeholder="e.g. 120"
+                        min="0"
+                        required
+                    >
+                </div>
+
+                <!-- Test Result -->
+                <div>
+                    <label for="emissionsResult">Statutory Test Result *</label>
+                    <select id="emissionsResult" name="emissionsResult" required>
+                        <option value="">Select Compliance Result</option>
+                        <option value="Pass">Pass (Compliant)</option>
+                        <option value="Fail">Fail (Exceeds Limits)</option>
+                    </select>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-span">
+                    <button type="submit" class="btn btn-outline" id="demoCertBtn">
+                        💾 Save Standard Record
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="blockchainIssueBtn" disabled>
+                        🔗 Issue On-Chain (Ganache)
+                    </button>
+
+                    <p id="issueMessage" class="form-message" role="status"></p>
+                </div>
+
+            </form>
+        </section>
+
+        <!-- Recently Issued Certificates -->
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>Recently Issued Certificates</h2>
+                <a href="verify.html" class="text-link">
+                    Public Verification Portal →
+                </a>
+            </div>
+
+            <div id="issuedList" class="empty-state">
+                No certificates recorded by this station yet.
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        National Digital PUC Certification & Verification System • Government Approved Standard
+    </footer>
+
+    <!-- Theme Toggle & Auth -->
+    <script src="js/theme.js"></script>
+    <!-- Ethers.js v6 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <script src="js/blockchain.js"></script>
+    <script src="js/puc.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

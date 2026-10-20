@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Owner Login | PUC Secure</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="brand" href="index.html">
+            <span class="brand-icon">✓</span>
+            <span>
+                <strong>PUC Secure</strong>
+                <small>National Blockchain Certificate Portal</small>
+            </span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button type="button" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+            <a class="back-link" href="index.html">
+                ← Back to Home
+            </a>
+        </div>
+    </header>
+
+    <!-- Login Card -->
+    <main class="auth-wrap">
+        <section class="auth-card">
+
+            <div class="auth-symbol">👤</div>
+
+            <h1>Vehicle Owner Login</h1>
+
+            <p class="muted">
+                Sign in to view and manage your vehicle emission certificates.
+            </p>
+
+            <form id="ownerLoginForm">
+
+                <label for="email">Registered Email Address</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="name@example.com"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="password">Password</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Enter your account password"
+                    autocomplete="current-password"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary full">
+                    Sign In to Portal
+                </button>
+
+                <p
+                    id="formMessage"
+                    class="form-message"
+                    role="status">
+                </p>
+
+            </form>
+
+            <p class="center muted" style="font-size: 13.5px;">
+                New vehicle owner?
+                <a href="owner-register.html" style="font-weight: 700;">
+                    Create an account
+                </a>
+            </p>
+
+            <div class="divider-classic" style="margin: 24px 0 16px;">
+                <span>PUBLIC VERIFICATION</span>
+            </div>
+
+            <a href="verify.html" class="btn btn-secondary full" style="font-size: 13px;">
+                🔍 Verify a Certificate Without Login
+            </a>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        National Digital PUC Certification & Verification System • Government Approved Standard
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

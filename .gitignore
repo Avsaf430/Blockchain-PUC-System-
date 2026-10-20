@@ -1,0 +1,15 @@
+
+node_modules/
+.env
+.env.*
+!.env.example
+
+artifacts/
+cache/
+coverage/
+
+frontend/node_modules/
+frontend/dist/
+
+.DS_Store
+Thumbs.db

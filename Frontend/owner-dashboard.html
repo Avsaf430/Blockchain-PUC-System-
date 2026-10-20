@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Owner Portal | PUC Secure</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="brand" href="index.html">
+            <span class="brand-icon">✓</span>
+            <span>
+                <strong>PUC Secure</strong>
+                <small>National Blockchain Certificate Portal</small>
+            </span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 14px;">
+            <button type="button" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+            <a href="verify.html" class="btn btn-outline" style="padding: 8px 14px; font-size: 13px;">
+                🔍 Verify Certificate
+            </a>
+            <button type="button" class="btn btn-outline" id="logoutBtn" style="padding: 8px 14px; font-size: 13px;">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <main class="dashboard">
+
+        <!-- Welcome Heading -->
+        <section class="dashboard-heading">
+            <div>
+                <span class="eyebrow">VEHICLE OWNER PORTAL</span>
+                <h1>
+                    Welcome, <span id="ownerName" style="color: var(--primary);">Vehicle Owner</span>
+                </h1>
+                <p class="muted">
+                    View, verify, and track your statutory vehicular emission compliance certificates.
+                </p>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <span class="pill success" style="padding: 6px 14px; font-size: 12px;">
+                    🛡️ Verified Owner Account
+                </span>
+            </div>
+        </section>
+
+        <!-- Key Metrics -->
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span>Total Registered Certificates</span>
+                <strong id="certCount">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Active & Compliant</span>
+                <strong id="activeCount" style="color: var(--green);">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Verification Authority</span>
+                <strong class="stat-label" style="color: var(--primary);">Transport Dept. (Official)</strong>
+            </article>
+        </section>
+
+        <!-- Certificates List Panel -->
+        <section class="panel">
+            <div class="panel-heading">
+                <h2>Issued Pollution Under Control Certificates</h2>
+                <span class="pill success">Verified Records</span>
+            </div>
+
+            <div id="certificateList" class="empty-state">
+                Loading your certificates...
+            </div>
+        </section>
+
+        <!-- Quick Navigation -->
+        <section class="panel">
+            <h2>Quick Actions</h2>
+            <div class="action-row">
+                <a href="verify.html" class="choice-card compact">
+                    <strong>🔍 Public Certificate Verification →</strong>
+                    <p>Lookup any certificate by unique ID or scan QR code.</p>
+                </a>
+
+                <a href="index.html" class="choice-card compact">
+                    <strong>🏠 Return to Main Homepage →</strong>
+                    <p>Go to the National PUC Secure portal home.</p>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        National Digital PUC Certification & Verification System • Government Approved Standard
+    </footer>
+
+    <!-- Ethers.js v6 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+    <!-- Theme Toggle & Auth -->
+    <script src="js/theme.js"></script>
+    <script src="js/owner.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

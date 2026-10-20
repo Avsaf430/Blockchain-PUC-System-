@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify PUC Certificate | PUC Secure</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+
+  <!-- Classic Site Navigation Header -->
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <span class="brand-icon">✓</span>
+      <span>
+        <strong>PUC Secure</strong>
+        <small>Blockchain Certificate System</small>
+      </span>
+    </a>
+
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <button type="button" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+      <a class="back-link" href="index.html">
+        ← Back to Home
+      </a>
+    </div>
+  </header>
+
+  <!-- Centered Verification Card -->
+  <main class="verify-portal-wrap">
+    <section class="verify-portal-card">
+
+      <!-- Header Icon & Titles -->
+      <div class="verify-header">
+        <div class="verify-symbol">🛡️</div>
+        <h1>Statutory PUC Verification</h1>
+        <p>
+          Verify the authenticity, emission compliance, and validity of any vehicle's Pollution Under Control certificate.
+        </p>
+      </div>
+
+      <!-- Verification Form -->
+      <form id="verifyForm">
+        <div class="verify-input-group">
+          <label for="certificateId">
+            <span>Certificate Number or ID</span>
+            <small class="muted">e.g. PUC2026001 or 1</small>
+          </label>
+          <input
+            type="text"
+            id="certificateId"
+            name="certificateId"
+            placeholder="Enter Certificate ID..."
+            autocomplete="off"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary full" style="font-size: 15px; padding: 13px;">
+          🔍 Verify Certificate
+        </button>
+      </form>
+
+      <!-- Classic Divider -->
+      <div class="divider-classic">
+        <span>OR</span>
+      </div>
+
+      <!-- QR Code Scan Action -->
+      <button type="button" id="scanButton" class="btn btn-scan full">
+        📷 Scan Certificate QR Code
+      </button>
+
+      <!-- Interactive QR Scanner Panel (Toggled by user) -->
+      <div id="qrScannerContainer" class="qr-scanner-box hidden">
+        <div class="qr-scanner-header">
+          <strong>📷 Align Camera with Certificate QR Code</strong>
+          <button type="button" id="closeScannerBtn" class="qr-scanner-close">✕ Close Scanner</button>
+        </div>
+        
+        <div id="qrReader"></div>
+        
+        <p id="qrScannerStatus" class="qr-scanner-status">
+          Point camera at the QR code on the PUC certificate...
+        </p>
+
+        <div style="margin-top: 12px;">
+          <label for="qrFileInput" class="qr-file-label">
+            📁 Or Upload QR Image / Screenshot
+          </label>
+          <input type="file" id="qrFileInput" accept="image/*">
+        </div>
+      </div>
+
+      <!-- Verification Result Box -->
+      <div id="verificationResult" aria-live="polite"></div>
+
+      <!-- Blockchain Node Switch Panel (Optional for Ganache directly) -->
+      <div id="blockchainPanel" style="margin-top: 20px; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: #f8fafc; display: none;">
+        <p class="muted small" style="margin: 0 0 10px;">
+          🔗 To query direct on-chain numeric IDs, connect MetaMask:
+        </p>
+        <button type="button" class="btn btn-primary" id="connectWalletBtn" style="font-size: 13px; padding: 8px 14px;">
+          🦊 Connect MetaMask
+        </button>
+        <span id="walletStatus" class="muted small" style="margin-left: 10px;"></span>
+      </div>
+
+      <!-- Trust Notice -->
+      <div class="center muted small" style="margin-top: 24px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+        🔒 Official Verification Portal • Open to vehicle owners & enforcement authorities.
+      </div>
+
+    </section>
+  </main>
+
+  <!-- HTML5 QR Code Scanner Library -->
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <!-- Ethers.js v6 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/blockchain.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

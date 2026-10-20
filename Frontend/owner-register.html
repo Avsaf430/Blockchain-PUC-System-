@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Owner Registration | PUC Secure</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="brand" href="index.html">
+            <span class="brand-icon">✓</span>
+            <span>
+                <strong>PUC Secure</strong>
+                <small>National Blockchain Certificate Portal</small>
+            </span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button type="button" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+            <a class="back-link" href="index.html">
+                ← Back to Home
+            </a>
+        </div>
+    </header>
+
+    <!-- Registration Card -->
+    <main class="auth-wrap">
+        <section class="auth-card">
+
+            <div class="auth-symbol">📝</div>
+
+            <h1>Create Owner Account</h1>
+
+            <p class="muted">
+                Register to link your vehicles and access verified emission certificates.
+            </p>
+
+            <form id="ownerRegisterForm">
+
+                <label for="name">Full Name (as per RC book)</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="e.g. Demo User"
+                    autocomplete="name"
+                    required
+                >
+
+                <label for="regEmail">Email Address</label>
+                <input
+                    type="email"
+                    id="regEmail"
+                    name="email"
+                    placeholder="name@example.com"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="regPassword">Create Account Password</label>
+                <input
+                    type="password"
+                    id="regPassword"
+                    name="password"
+                    placeholder="Minimum 6 characters"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+                <label for="confirmPassword">Confirm Password</label>
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Re-enter your password"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary full">
+                    Complete Registration
+                </button>
+
+                <p
+                    id="formMessage"
+                    class="form-message"
+                    role="status">
+                </p>
+
+            </form>
+
+            <p class="center muted" style="font-size: 13.5px;">
+                Already registered?
+                <a href="owner-login.html" style="font-weight: 700;">
+                    Sign in here
+                </a>
+            </p>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        National Digital PUC Certification & Verification System • Government Approved Standard
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

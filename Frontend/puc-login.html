@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUC Centre Login | PUC Secure</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a class="brand" href="index.html">
+            <span class="brand-icon">✓</span>
+            <span>
+                <strong>PUC Secure</strong>
+                <small>National Blockchain Certificate Portal</small>
+            </span>
+        </a>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <button type="button" class="theme-toggle-btn" aria-label="Toggle theme">🌙</button>
+            <a class="back-link" href="index.html">
+                ← Back to Home
+            </a>
+        </div>
+    </header>
+
+    <!-- PUC Centre Login Card -->
+    <main class="auth-wrap">
+        <section class="auth-card">
+
+            <div class="auth-symbol teal-bg">🏢</div>
+
+            <h1>PUC Centre Login</h1>
+
+            <p class="muted">
+                Authorized Testing Station Portal access.
+            </p>
+
+            <form id="pucLoginForm">
+
+                <!-- Centre ID -->
+                <label for="centreId">Assigned Station / Centre ID</label>
+                <input
+                    type="text"
+                    id="centreId"
+                    name="centreId"
+                    placeholder="e.g. PUC001"
+                    autocomplete="username"
+                    required
+                >
+
+                <!-- Password -->
+                <label for="centrePassword">Station Password</label>
+                <input
+                    type="password"
+                    id="centrePassword"
+                    name="password"
+                    placeholder="Enter station access password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <!-- Login Button -->
+                <button
+                    type="submit"
+                    class="btn btn-primary full">
+                    Sign In to Station Portal
+                </button>
+
+                <!-- Error / Success Message -->
+                <p
+                    id="formMessage"
+                    class="form-message"
+                    role="status">
+                </p>
+
+            </form>
+
+            <div class="notice" style="margin-top: 24px;">
+                <strong>Restricted Official Access:</strong>
+                Testing station accounts are provisioned by the Transport Department. Demo credentials: <code>PUC001</code> / <code>Centre@123</code>.
+            </div>
+
+            <div class="divider-classic" style="margin: 24px 0 16px;">
+                <span>PUBLIC VERIFICATION</span>
+            </div>
+
+            <a href="verify.html" class="btn btn-secondary full" style="font-size: 13px;">
+                🔍 Verify a Certificate Without Login
+            </a>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        National Digital PUC Certification & Verification System • Government Approved Standard
+    </footer>
+
+    <script src="js/theme.js"></script>
+    <script src="js/auth.js"></script>
+
+</body>
+</html>

@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PUC Certificate</title>
-
   <style>
     * {
       box-sizing: border-box;
@@ -13,143 +12,167 @@
 
     body {
       margin: 0;
-      padding: 24px;
-      background: #f1f5f9;
-      color: #1f2937;
+      padding: 16px;
       font-family: Arial, sans-serif;
+      color: #172033;
+      background: #eef2f7;
     }
 
     .actions {
-      max-width: 850px;
-      margin: 0 auto 16px;
+      max-width: 760px;
+      margin: 0 auto 12px;
       display: flex;
-      gap: 10px;
+      gap: 8px;
     }
 
     button,
-    .back-button {
-      padding: 11px 17px;
-      border: none;
+    .back {
+      border: 0;
       border-radius: 5px;
+      padding: 9px 13px;
       background: #1d4ed8;
       color: white;
-      font-size: 14px;
-      cursor: pointer;
       text-decoration: none;
+      font-size: 13px;
+      cursor: pointer;
     }
 
     .certificate {
-      max-width: 850px;
+      max-width: 760px;
       margin: auto;
-      padding: 30px;
+      padding: 22px;
       background: white;
-      border: 2px solid #334155;
-      border-radius: 8px;
+      border: 2px solid #243247;
     }
 
     .header {
       text-align: center;
-      padding-bottom: 18px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #334155;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #243247;
     }
 
-    .header h1 {
-      margin: 0 0 8px;
-      font-size: 26px;
+    h1 {
+      margin: 0 0 5px;
+      font-size: 22px;
     }
 
-    .header p {
-      margin: 5px;
+    .subtitle {
+      margin: 0;
+      font-size: 12px;
+      color: #475569;
     }
 
-    .warning {
-      margin-bottom: 20px;
-      padding: 12px;
+    .demo {
+      margin: 12px 0;
+      padding: 7px;
       text-align: center;
-      background: #fee2e2;
       color: #991b1b;
+      background: #fee2e2;
       border: 1px solid #fecaca;
+      font-size: 11px;
       font-weight: bold;
     }
 
     .details {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 8px;
     }
 
     .field {
-      padding: 12px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      overflow-wrap: anywhere;
+      padding: 8px 9px;
+      border: 1px solid #dbe2ea;
+      border-radius: 3px;
+      min-width: 0;
     }
 
     .field strong {
       display: block;
-      margin-bottom: 6px;
-      font-size: 12px;
+      margin-bottom: 3px;
       color: #475569;
+      font-size: 10px;
       text-transform: uppercase;
     }
 
-    .qr-section {
-      margin-top: 25px;
-      padding-top: 20px;
+    .field span {
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1fr 180px;
+      gap: 16px;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 12px;
       border-top: 1px solid #cbd5e1;
+    }
+
+    .chain p {
+      margin: 5px 0;
+      font-size: 10px;
+      overflow-wrap: anywhere;
+    }
+
+    .qr {
       text-align: center;
+      font-size: 11px;
     }
 
     #qrcode {
+      min-height: 120px;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 210px;
-      margin: 15px auto;
+      margin: 5px auto;
     }
 
     #qrcode img,
     #qrcode canvas {
-      display: block;
-      max-width: 100%;
+      max-width: 120px;
       height: auto;
     }
 
-    .hash {
-      overflow-wrap: anywhere;
-      font-size: 12px;
+    #qrMessage {
+      margin: 4px 0;
+      color: #475569;
     }
 
     #errorMessage {
-      max-width: 850px;
-      margin: 15px auto;
-      padding: 14px;
+      max-width: 760px;
+      margin: 10px auto;
+      padding: 10px;
       background: #fee2e2;
       color: #991b1b;
-      border: 1px solid #fecaca;
     }
 
     .hidden {
       display: none !important;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 560px) {
       body {
-        padding: 12px;
+        padding: 8px;
       }
 
       .certificate {
-        padding: 16px;
+        padding: 12px;
       }
 
-      .details {
+      .bottom {
         grid-template-columns: 1fr;
       }
 
-      .header h1 {
-        font-size: 21px;
+      #qrcode img,
+      #qrcode canvas {
+        max-width: 140px;
       }
+    }
+
+    @page {
+      size: A4 portrait;
+      margin: 12mm;
     }
 
     @media print {
@@ -164,279 +187,160 @@
       }
 
       .certificate {
-        max-width: 100%;
-        border: 2px solid #000;
-        border-radius: 0;
+        width: 100%;
+        max-width: none;
+        padding: 14px;
+        border: 2px solid #243247;
       }
 
       .field {
-        background: white;
+        padding: 7px;
+      }
+
+      .bottom {
+        grid-template-columns: 1fr 150px;
+      }
+
+      #qrcode img,
+      #qrcode canvas {
+        max-width: 115px;
       }
     }
   </style>
 </head>
 
 <body>
-
   <div class="actions">
-    <a href="dashboard.html" class="back-button">Back</a>
-    <button type="button" onclick="window.print()">
-      Print / Save as PDF
-    </button>
+    <a class="back" href="dashboard.html">Back</a>
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
   </div>
-
   <div id="errorMessage" class="hidden"></div>
 
   <main id="certificate" class="certificate hidden">
-
     <header class="header">
       <h1>Pollution Under Control Certificate</h1>
-      <p>Vehicle Emission Test Record</p>
-      <p>Certificate ID: <strong id="certificateId">—</strong></p>
+      <p class="subtitle">Vehicle Emission Test Record</p>
+      <p class="subtitle">Certificate ID: <strong id="certificateId">—</strong></p>
     </header>
 
-    <div class="warning">
-      DEMO ONLY — NOT AN OFFICIAL GOVERNMENT CERTIFICATE
-    </div>
-
-    <h3>Vehicle and Owner Details</h3>
+    <div class="demo">COLLEGE DEMO ONLY — NOT AN OFFICIAL GOVERNMENT CERTIFICATE</div>
 
     <section class="details">
-      <div class="field">
-        <strong>Vehicle Number</strong>
-        <span id="vehicleNumber">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Owner Name</strong>
-        <span id="ownerName">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Owner Wallet</strong>
-        <span id="ownerWallet">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Fuel Type</strong>
-        <span id="fuelType">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Vehicle Type</strong>
-        <span id="vehicleType">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Test Date</strong>
-        <span id="testDate">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Valid Until</strong>
-        <span id="validUntil">—</span>
-      </div>
-
-      <div class="field">
-        <strong>CO Emission</strong>
-        <span id="co">—</span>
-      </div>
-
-      <div class="field">
-        <strong>HC Emission</strong>
-        <span id="hc">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Test Result</strong>
-        <span id="result">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Certificate Status</strong>
-        <span id="status">—</span>
-      </div>
-
-      <div class="field">
-        <strong>Storage Type</strong>
-        <span id="storageType">—</span>
-      </div>
+      <div class="field"><strong>Vehicle Number</strong><span id="vehicleNumber">—</span></div>
+      <div class="field"><strong>Owner Name</strong><span id="ownerName">—</span></div>
+      <div class="field"><strong>Vehicle Type / Fuel</strong><span id="vehicleFuel">—</span></div>
+      <div class="field"><strong>Test Date</strong><span id="testDate">—</span></div>
+      <div class="field"><strong>Valid Until</strong><span id="validUntil">—</span></div>
+      <div class="field"><strong>Test Result</strong><span id="result">—</span></div>
+      <div class="field"><strong>CO Emission</strong><span id="co">—</span></div>
+      <div class="field"><strong>HC Emission</strong><span id="hc">—</span></div>
     </section>
 
-    <section class="qr-section">
-      <h3>Certificate Verification</h3>
-      <p>Scan this QR code to open the verification page.</p>
-
-      <div id="qrcode"></div>
-      <p id="qrMessage">Generating QR code...</p>
-
-      <p>
-        Certificate ID:
-        <strong id="qrCertificateId">—</strong>
-      </p>
+    <section class="bottom">
+      <div class="chain">
+        <p><strong>Record status:</strong> <span id="status">—</span></p>
+        <p><strong>Blockchain certificate ID:</strong> <span id="blockchainCertId">—</span></p>
+        <p><strong>Transaction hash:</strong> <span id="transactionHash">Not available</span></p>
+        <p><strong>Block number:</strong> <span id="blockNumber">Not available</span></p>
+      </div>
+      <div class="qr">
+        <strong>Scan to verify</strong>
+        <div id="qrcode"></div>
+        <p id="qrMessage">Generating QR code…</p>
+      </div>
     </section>
-
-    <section>
-      <h3>Blockchain Transaction Details</h3>
-
-      <p class="hash">
-        <strong>Transaction Hash:</strong>
-        <span id="transactionHash">Not available</span>
-      </p>
-
-      <p>
-        <strong>Blockchain Certificate ID:</strong>
-        <span id="blockchainCertId">Not available</span>
-      </p>
-
-      <p>
-        <strong>Block Number:</strong>
-        <span id="blockNumber">Not available</span>
-      </p>
-    </section>
-
   </main>
 
-  <!-- Load the QR library from your local frontend/js folder. -->
   <script src="js/qrcode.min.js"></script>
-
   <script>
-    function loadCertificate() {
+    (function () {
       const params = new URLSearchParams(window.location.search);
       const requestedId = params.get("id") || params.get("certificateId");
-
       const errorBox = document.getElementById("errorMessage");
-      const certificateBox = document.getElementById("certificate");
+      const certBox = document.getElementById("certificate");
       const qrBox = document.getElementById("qrcode");
       const qrMessage = document.getElementById("qrMessage");
 
       function showError(message) {
         errorBox.textContent = message;
         errorBox.classList.remove("hidden");
-        certificateBox.classList.add("hidden");
       }
-
       function setText(id, value) {
         document.getElementById(id).textContent =
-          value === undefined || value === null || value === ""
-            ? "Not available"
-            : String(value);
+          value === undefined || value === null || value === "" ? "Not available" : String(value);
       }
-
-      function formatDate(value) {
+      function dateText(value) {
         if (!value) return "Not available";
-
-        const str = String(value);
-
-        if (/^\d{4}-\d{2}-\d{2}$/.test(str)) {
-          return str;
-        }
-
-        const date = new Date(value);
-
-        return Number.isNaN(date.getTime())
-          ? str
-          : date.toLocaleDateString();
+        const s = String(value);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+        const d = new Date(value);
+        return Number.isNaN(d.getTime()) ? s : d.toLocaleDateString();
       }
 
       if (!requestedId) {
-        showError(
-          "Certificate ID is missing. Open this page using View / Print Certificate from the dashboard."
-        );
+        showError("Certificate ID missing. Open this page using View / Print Certificate from your dashboard.");
         return;
       }
 
       let records;
-
       try {
-        records = JSON.parse(
-          localStorage.getItem("pucDemoCertificates") || "[]"
-        );
-      } catch (error) {
-        showError("Could not read saved certificates from this browser.");
+        records = JSON.parse(localStorage.getItem("pucDemoCertificates") || "[]");
+      } catch (e) {
+        showError("Could not read saved certificates in this browser.");
         return;
       }
-
-      if (!Array.isArray(records)) {
-        showError("Saved certificate data has an invalid format.");
-        return;
-      }
-
-      const record = records.find(function (item) {
-        return String(item.certificateId) === requestedId ||
-          String(item.blockchainCertId) === requestedId;
-      });
+      if (!Array.isArray(records)) records = [];
+      const record = records.find(r =>
+        String(r.certificateId || "") === requestedId ||
+        String(r.blockchainCertId || "") === requestedId
+      );
 
       if (!record) {
-        showError(
-          "Certificate not found. Open it in the same browser where you issued the certificate."
-        );
+        showError("Certificate not found in this browser. Open it from the same browser where you issued it.");
         return;
       }
 
-      const emission = record.emissionResult ||
-        record.emissions ||
-        {};
-
-      const certId = record.certificateId || requestedId;
-
-      setText("certificateId", certId);
-      setText("qrCertificateId", certId);
+      const emission = record.emissionResult || record.emissions || {};
+      setText("certificateId", record.certificateId || requestedId);
       setText("vehicleNumber", record.vehicleNumber);
       setText("ownerName", record.ownerName);
-      setText("ownerWallet", record.ownerWallet);
-      setText("fuelType", record.fuelType);
-      setText("vehicleType", record.vehicleType);
-      setText("testDate", formatDate(record.testDate));
-      setText("validUntil", formatDate(record.validUntil));
-      setText("co", emission.co);
-      setText("hc", emission.hc);
+      setText("vehicleFuel", [record.vehicleType, record.fuelType].filter(Boolean).join(" / "));
+      setText("testDate", dateText(record.testDate));
+      setText("validUntil", dateText(record.validUntil || record.expiryDate));
       setText("result", emission.result || record.result);
+      setText("co", emission.co === undefined ? "" : emission.co + " %");
+      setText("hc", emission.hc === undefined ? "" : emission.hc + " ppm");
       setText("status", record.status);
-      setText("storageType", record.storageType);
-      setText("transactionHash", record.transactionHash);
       setText("blockchainCertId", record.blockchainCertId);
+      setText("transactionHash", record.transactionHash);
       setText("blockNumber", record.blockNumber);
-
-      certificateBox.classList.remove("hidden");
-
-      // QRCode.js uses new QRCode(container, options).
-      // It does not use QRCode.toDataURL().
-      qrBox.innerHTML = "";
+      certBox.classList.remove("hidden");
 
       if (typeof window.QRCode !== "function") {
-        qrMessage.textContent =
-          "QR library did not load. Check frontend/js/qrcode.min.js.";
+        qrMessage.textContent = "QR library did not load. Check frontend/js/qrcode.min.js.";
         return;
       }
 
-      const verificationUrl = new URL(
-        "verify.html?certificateId=" + encodeURIComponent(certId),
+      const verifyUrl = new URL(
+        "verify.html?certificateId=" + encodeURIComponent(record.certificateId || requestedId),
         window.location.href
       ).href;
 
       try {
+        qrBox.replaceChildren();
         new window.QRCode(qrBox, {
-          text: verificationUrl,
-          width: 200,
-          height: 200,
-          correctLevel: window.QRCode.CorrectLevel
-            ? window.QRCode.CorrectLevel.M
-            : 0
+          text: verifyUrl,
+          width: 120,
+          height: 120,
+          correctLevel: window.QRCode.CorrectLevel ? window.QRCode.CorrectLevel.M : 0
         });
-
-        qrMessage.textContent =
-          "Scan the QR code to open the verification page.";
-      } catch (error) {
-        console.error("QR generation error:", error);
-        qrMessage.textContent =
-          "Unable to generate QR code. Check the browser Console.";
+        qrMessage.textContent = "Scan to open the verification page.";
+      } catch (e) {
+        console.error("QR generation error:", e);
+        qrMessage.textContent = "Unable to generate QR code. Check the browser Console.";
       }
-    }
-
-    document.addEventListener("DOMContentLoaded", loadCertificate);
+    })();
   </script>
-
 </body>
 
 </html>

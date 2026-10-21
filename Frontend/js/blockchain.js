@@ -21,7 +21,7 @@ const PUCBlockchain = (() => {
     const GANACHE_CHAIN_ID = 1337;
 
     // Replace this with your deployed contract address.
-    const CONTRACT_ADDRESS = "0x2E13D54fD4236cbf3E1A71C0b8A4025907a6Bd03";
+    const CONTRACT_ADDRESS = "0x7F3A1EDcC76b97bFb34029aa5c6D1BD4424072Ec";
 
     /*
      * Minimal example ABI.

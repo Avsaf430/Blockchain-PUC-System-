@@ -203,10 +203,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 addField(card, "Tx Hash", r.transactionHash.slice(0, 16) + "…");
             }
 
+            const certificateLink = document.createElement("a");
+            certificateLink.href = "certificate.html?id=" + encodeURIComponent(r.certificateId || "");
+            certificateLink.className = "text-link";
+            certificateLink.textContent = "View / Print Certificate (with QR) →";
+            certificateLink.style.display = "block";
+            certificateLink.style.marginTop = "8px";
+            card.appendChild(certificateLink);
+
             const link = document.createElement("a");
             link.href = "verify.html?certificateId=" + encodeURIComponent(r.certificateId || "");
             link.className = "text-link";
             link.textContent = "View verification page →";
+            link.style.display = "block";
+            link.style.marginTop = "8px";
             card.appendChild(link);
 
             issuedList.appendChild(card);

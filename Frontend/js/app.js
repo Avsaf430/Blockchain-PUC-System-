@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 2. MetaMask connect button (on verify.html)
     const connectWalletBtn = document.getElementById("connectWalletBtn");
-    const walletStatusEl   = document.getElementById("walletStatus");
-    const blockchainPanel  = document.getElementById("blockchainPanel");
+    const walletStatusEl = document.getElementById("walletStatus");
+    const blockchainPanel = document.getElementById("blockchainPanel");
 
     let walletConnected = false;
 
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
             event.preventDefault();
 
             const certificateInput = document.getElementById("certificateId");
-            const resultBox        = document.getElementById("verificationResult");
+            const resultBox = document.getElementById("verificationResult");
 
             if (!certificateInput || !resultBox) return;
 
@@ -170,158 +170,167 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+
     // 5. QR Scanner Implementation (Camera + File Upload)
-    const scanButton         = document.getElementById("scanButton");
+    const scanButton = document.getElementById("scanButton");
     const qrScannerContainer = document.getElementById("qrScannerContainer");
-    const closeScannerBtn    = document.getElementById("closeScannerBtn");
-    const qrScannerStatus    = document.getElementById("qrScannerStatus");
-    const qrFileInput        = document.getElementById("qrFileInput");
+    const closeScannerBtn = document.getElementById("closeScannerBtn");
+    const qrScannerStatus = document.getElementById("qrScannerStatus");
+    const qrFileInput = document.getElementById("qrFileInput");
 
     let html5QrCode = null;
     let isScanning = false;
 
-    // Helper: Parse Certificate ID from QR text
     function parseCertificateId(decodedText) {
         if (!decodedText) return "";
+
         const clean = decodedText.trim();
 
-        // 1. Check if it's a verification URL
-        if (clean.includes("certificateId=")) {
+        // QR contains a verification URL.
+        try {
+            const url = new URL(clean);
+            const id = url.searchParams.get("certificateId") ||
+                url.searchParams.get("id");
+
+            if (id) return id.trim();
+        } catch (_) {
+            // The QR may contain a plain ID instead of a URL.
+        }
+
+        // Handle URL fragments or text containing a certificate ID.
+        const match = clean.match(/[?&](?:certificateId|id)=([^&]+)/i);
+        if (match) {
             try {
-                const url = new URL(clean);
-                const id = url.searchParams.get("certificateId");
-                if (id) return id.trim();
-            } catch {
-                const match = clean.match(/certificateId=([^&]+)/i);
-                if (match && match[1]) return decodeURIComponent(match[1]);
+                return decodeURIComponent(match[1]).trim();
+            } catch (_) {
+                return match[1].trim();
             }
         }
 
-        // 2. Check JSON string format
-        if (clean.startsWith("{") && clean.endsWith("}")) {
-            try {
-                const data = JSON.parse(clean);
-                if (data.certificateId) return data.certificateId;
-                if (data.id) return data.id;
-            } catch {
-                /* non-fatal */
-            }
-        }
-
-        // 3. Fallback: raw ID
+        // Raw ID, such as PUC2026005.
         return clean;
     }
 
-    // Stop scanner and reset UI
+    function setScannerStatus(message) {
+        if (qrScannerStatus) qrScannerStatus.textContent = message;
+    }
+
     async function stopScanner() {
         if (html5QrCode && isScanning) {
             try {
                 await html5QrCode.stop();
-            } catch (err) {
-                console.warn("QR stop warning:", err);
+            } catch (error) {
+                console.warn("Could not stop scanner:", error);
             }
-            html5QrCode.clear();
+
+            isScanning = false;
         }
-        isScanning = false;
-        if (qrScannerContainer) qrScannerContainer.classList.add("hidden");
+
+        if (qrScannerContainer) {
+            qrScannerContainer.classList.add("hidden");
+        }
+
         if (scanButton) scanButton.disabled = false;
     }
 
-    // Process a successfully decoded QR code
     function handleScanSuccess(decodedText) {
         const certId = parseCertificateId(decodedText);
-        if (!certId) return;
+
+        if (!certId) {
+            setScannerStatus("Could not read a certificate ID from this QR.");
+            return;
+        }
 
         stopScanner();
 
-        const certInput = document.getElementById("certificateId");
-        if (certInput) {
-            certInput.value = certId;
-        }
+        const input = document.getElementById("certificateId");
+        if (input) input.value = certId;
 
-        // Automatically trigger verification submit
+        setScannerStatus("QR read successfully. Verifying certificate...");
+
         if (verifyForm) {
-            verifyForm.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+            verifyForm.requestSubmit();
         }
     }
 
     if (scanButton && qrScannerContainer) {
         scanButton.addEventListener("click", async function () {
             if (typeof Html5Qrcode === "undefined") {
-                alert("QR Scanner library is loading. Please check internet connection or retry.");
-                return;
-            }
-
-            if (isScanning) {
-                await stopScanner();
+                setScannerStatus(
+                    "QR scanner library did not load. Check your internet connection."
+                );
+                qrScannerContainer.classList.remove("hidden");
                 return;
             }
 
             qrScannerContainer.classList.remove("hidden");
             scanButton.disabled = true;
-            if (qrScannerStatus) qrScannerStatus.textContent = "Starting camera...";
+            setScannerStatus("Starting camera...");
 
             try {
                 if (!html5QrCode) {
                     html5QrCode = new Html5Qrcode("qrReader");
                 }
 
-                const config = {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    aspectRatio: 1.0
-                };
-
                 await html5QrCode.start(
-                    { facingMode: "environment" }, // Prefer rear camera on mobile
-                    config,
-                    (decodedText) => {
+                    { facingMode: "environment" },
+                    {
+                        fps: 10,
+                        qrbox: { width: 250, height: 250 },
+                        aspectRatio: 1
+                    },
+                    function (decodedText) {
                         handleScanSuccess(decodedText);
                     },
-                    (errorMessage) => {
-                        // Continuous scanning frame error, safe to ignore
+                    function () {
+                        // Ignore frames where no QR is detected.
                     }
                 );
 
                 isScanning = true;
-                if (qrScannerStatus) qrScannerStatus.textContent = "Align QR code inside the frame.";
-            } catch (err) {
-                console.error("Camera scanner error:", err);
-                if (qrScannerStatus) {
-                    qrScannerStatus.textContent = "Camera access denied or unavailable. You can upload an image below.";
-                }
+                setScannerStatus("Point the camera at the QR code.");
+            } catch (error) {
+                console.error("Camera scanner error:", error);
+                setScannerStatus(
+                    "Camera unavailable. Upload a clear QR screenshot below."
+                );
                 scanButton.disabled = false;
             }
         });
     }
 
     if (closeScannerBtn) {
-        closeScannerBtn.addEventListener("click", function () {
-            stopScanner();
-        });
+        closeScannerBtn.addEventListener("click", stopScanner);
     }
 
-    // Handle File Upload Scanner (fallback if no camera)
     if (qrFileInput) {
-        qrFileInput.addEventListener("change", async function (e) {
-            const file = e.target.files?.[0];
+        qrFileInput.addEventListener("change", async function () {
+            const file = qrFileInput.files && qrFileInput.files[0];
             if (!file) return;
 
-            if (qrScannerStatus) qrScannerStatus.textContent = "Scanning uploaded image...";
+            setScannerStatus("Reading uploaded QR image...");
 
             try {
-                const scanner = html5QrCode || new Html5Qrcode("qrReader");
-                const decodedText = await scanner.scanFile(file, true);
-                handleScanSuccess(decodedText);
-            } catch (err) {
-                if (qrScannerStatus) {
-                    qrScannerStatus.textContent = "No valid QR code found in this image. Please try another image.";
+                if (typeof Html5Qrcode === "undefined") {
+                    throw new Error("The QR scanner library did not load.");
                 }
+
+                // Use a separate instance for image decoding.
+                const fileScanner = new Html5Qrcode("qrReader");
+                const decodedText = await fileScanner.scanFile(file, true);
+
+                handleScanSuccess(decodedText);
+            } catch (error) {
+                console.error("QR image decoding error:", error);
+                setScannerStatus(
+                    "QR not detected. Upload a clear image containing the entire QR code, without cropping or blur."
+                );
             } finally {
                 qrFileInput.value = "";
             }
         });
     }
+
 
 });
 
@@ -331,7 +340,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function addDetail(container, label, value) {
     const paragraph = document.createElement("p");
-    const strong    = document.createElement("strong");
+    const strong = document.createElement("strong");
     strong.textContent = label + ": ";
     paragraph.appendChild(strong);
     paragraph.appendChild(document.createTextNode(String(value ?? "—")));

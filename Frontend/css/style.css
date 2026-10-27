@@ -1277,6 +1277,39 @@ input::placeholder {
     background: linear-gradient(135deg, #475569 0%, #64748b 100%);
 }
 
+.cert-result-top.tampered {
+    background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%);
+}
+
+.tamper-alert-box {
+    margin: 0 0 20px 0;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+}
+
+.tamper-alert-box.danger {
+    background: #fef2f2;
+    border: 1.5px solid #f87171;
+    color: #991b1b;
+}
+
+.tamper-alert-box.success {
+    background: #ecfdf5;
+    border: 1.5px solid #6ee7b7;
+    color: #065f46;
+}
+
+.tamper-alert-box.info {
+    background: #eff6ff;
+    border: 1.5px solid #93c5fd;
+    color: #1e40af;
+}
+
 .cert-result-top strong {
     font-size: 14px;
     letter-spacing: 0.6px;
@@ -1536,6 +1569,24 @@ input::placeholder {
 [data-theme="dark"] .cert-result-container {
     background: #111827;
     border-color: #1f293d;
+}
+
+[data-theme="dark"] .tamper-alert-box.danger {
+    background: #450a0a;
+    border-color: #991b1b;
+    color: #fca5a5;
+}
+
+[data-theme="dark"] .tamper-alert-box.success {
+    background: #022c22;
+    border-color: #065f46;
+    color: #6ee7b7;
+}
+
+[data-theme="dark"] .tamper-alert-box.info {
+    background: #172554;
+    border-color: #1e40af;
+    color: #93c5fd;
 }
 
 [data-theme="dark"] input,

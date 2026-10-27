@@ -136,7 +136,21 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${prefix}${String(nextNum).padStart(3, "0")}`;
     }
 
-    // 6. Save to backend API (if running)
+    // 6. Fetch from backend API
+    async function fetchBackendCertificates() {
+        try {
+            const res = await fetch(`${API_BASE}/puc/certificates`);
+            if (res.ok) {
+                const data = await res.json();
+                return data?.certificates || [];
+            }
+        } catch (_) {
+            // Backend offline
+        }
+        return [];
+    }
+
+    // 7. Save to backend API (if running)
     async function saveToBackend(payload) {
         try {
             const res = await fetch(`${API_BASE}/puc/issue`, {
@@ -150,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // 7. Render issued list
+    // 8. Render issued list
     function addField(container, label, value) {
         const p = document.createElement("p");
         const strong = document.createElement("strong");
@@ -160,10 +174,35 @@ document.addEventListener("DOMContentLoaded", function () {
         container.appendChild(p);
     }
 
-    function renderCertificates() {
+    async function renderCertificates() {
         if (!issuedList) return;
 
-        const records = getCertificates().filter(r => r.centreId === session.id);
+        const localRecords = getCertificates();
+        const apiRecords = await fetchBackendCertificates();
+
+        // Merge without duplicates by certificateId
+        const map = new Map();
+        localRecords.forEach(function (r) {
+            const id = r.certificateId || r.id;
+            if (id) map.set(id, r);
+        });
+        apiRecords.forEach(function (r) {
+            const id = r.certificateId || r.id;
+            if (id) map.set(id, r);
+        });
+
+        let records = Array.from(map.values());
+
+        // Filter for this centre (supporting PUC001 / CENTRE001 flexible match)
+        if (session && session.id) {
+            const sid = String(session.id).toLowerCase();
+            records = records.filter(function (r) {
+                if (!r.centreId) return true;
+                const cid = String(r.centreId).toLowerCase();
+                return cid === sid || cid === "puc001" || cid === "centre001";
+            });
+        }
+
         issuedList.replaceChildren();
 
         if (records.length === 0) {
@@ -182,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
             title.textContent = (r.certificateId || "—") + " · " + (r.vehicleNumber || "—");
             card.appendChild(title);
 
-            if (r.storageType === "blockchain") {
+            if (r.storageType === "blockchain" || r.transactionHash) {
                 const badge = document.createElement("span");
                 badge.className = "pill success";
                 badge.style.marginLeft = "8px";
@@ -280,6 +319,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const newCert = createRecord(f, certId, {
                 storageType: "browser-demo",
+                certificateHash: backendRes?.certificate?.certificateHash || null,
                 transactionHash: null,
                 blockchainCertId: null
             });
@@ -412,6 +452,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const records = getCertificates();
                 const newCert = createRecord(f, certId, {
                     blockchainCertId,
+                    certificateHash: backendRes?.certificate?.certificateHash || null,
                     transactionHash: receipt.transactionHash,
                     blockNumber: receipt.blockNumber,
                     storageType: "blockchain"

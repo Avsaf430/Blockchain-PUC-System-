@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (res.ok) {
                     const data = await res.json();
                     if (data?.success && data?.certificate) {
-                        displayFullCertificate(resultBox, data.certificate, "MongoDB Database");
+                        displayFullCertificate(resultBox, data.certificate, "MongoDB Database", currentScannedHash);
                         return;
                     }
                 }
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (found) {
-                displayFullCertificate(resultBox, found, "Local Demo Storage");
+                displayFullCertificate(resultBox, found, "Local Demo Storage", currentScannedHash);
                 return;
             }
 
@@ -155,9 +155,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 4. Handle ?certificateId= query param
+    // 4. Handle ?certificateId= & ?hash= query params
     const urlParams = new URLSearchParams(window.location.search);
-    const urlCertId = urlParams.get("certificateId");
+    const urlCertId = urlParams.get("certificateId") || urlParams.get("id");
+    const urlHash = urlParams.get("hash");
+
+    let currentScannedHash = urlHash || null;
 
     if (urlCertId) {
         const input = document.getElementById("certificateId");
@@ -181,34 +184,52 @@ document.addEventListener("DOMContentLoaded", function () {
     let html5QrCode = null;
     let isScanning = false;
 
-    function parseCertificateId(decodedText) {
-        if (!decodedText) return "";
+    function parseQrData(decodedText) {
+        if (!decodedText) return { id: "", hash: null };
 
         const clean = decodedText.trim();
+        let id = "";
+        let hash = null;
 
-        // QR contains a verification URL.
+        // 1. Check if QR contains a full verification URL
         try {
             const url = new URL(clean);
-            const id = url.searchParams.get("certificateId") ||
-                url.searchParams.get("id");
+            id = url.searchParams.get("certificateId") || url.searchParams.get("id") || "";
+            hash = url.searchParams.get("hash") || null;
+            if (id) return { id: id.trim(), hash: hash ? hash.trim() : null };
+        } catch (_) {}
 
-            if (id) return id.trim();
-        } catch (_) {
-            // The QR may contain a plain ID instead of a URL.
+        // 2. Check if QR contains JSON data
+        if (clean.startsWith("{") && clean.endsWith("}")) {
+            try {
+                const parsed = JSON.parse(clean);
+                id = parsed.certificateId || parsed.id || "";
+                hash = parsed.hash || parsed.certificateHash || null;
+                if (id) return { id: String(id).trim(), hash: hash ? String(hash).trim() : null };
+            } catch (_) {}
         }
 
-        // Handle URL fragments or text containing a certificate ID.
-        const match = clean.match(/[?&](?:certificateId|id)=([^&]+)/i);
-        if (match) {
+        // 3. Regex match for query strings
+        const idMatch = clean.match(/[?&](?:certificateId|id)=([^&]+)/i);
+        const hashMatch = clean.match(/[?&]hash=([^&]+)/i);
+        if (idMatch) {
             try {
-                return decodeURIComponent(match[1]).trim();
+                id = decodeURIComponent(idMatch[1]).trim();
             } catch (_) {
-                return match[1].trim();
+                id = idMatch[1].trim();
             }
         }
+        if (hashMatch) {
+            try {
+                hash = decodeURIComponent(hashMatch[1]).trim();
+            } catch (_) {
+                hash = hashMatch[1].trim();
+            }
+        }
+        if (id) return { id, hash };
 
-        // Raw ID, such as PUC2026005.
-        return clean;
+        // 4. Fallback: Raw ID
+        return { id: clean, hash: null };
     }
 
     function setScannerStatus(message) {
@@ -234,7 +255,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function handleScanSuccess(decodedText) {
-        const certId = parseCertificateId(decodedText);
+        const parsed = parseQrData(decodedText);
+        const certId = parsed.id;
+        currentScannedHash = parsed.hash;
 
         if (!certId) {
             setScannerStatus("Could not read a certificate ID from this QR.");
@@ -413,7 +436,7 @@ function displayBlockchainCertificate(resultBox, cert) {
         </div>
 
         <div class="cert-result-footer">
-          <span>🛡️ Verified directly on Ganache Blockchain</span>
+          <span>🛡️ Blockchain Verified Record</span>
           <span style="font-weight: 700; color: #0f766e;">On-Chain Record</span>
         </div>
       </div>
@@ -423,7 +446,7 @@ function displayBlockchainCertificate(resultBox, cert) {
 }
 
 /* Render full certificate from Database or Local Storage */
-function displayFullCertificate(resultBox, cert, source) {
+function displayFullCertificate(resultBox, cert, source, scannedHash = null) {
     resultBox.replaceChildren();
     resultBox.classList.remove("hidden");
 
@@ -438,10 +461,25 @@ function displayFullCertificate(resultBox, cert, source) {
     const isRevoked = cert.status === "revoked";
     const isValid = passed && !isExpired && !isRevoked;
 
+    // Tamper Detection Check
+    const dbHash = cert.certificateHash || null;
+    let isTampered = false;
+    let tamperChecked = false;
+
+    if (scannedHash) {
+        tamperChecked = true;
+        if (!dbHash || scannedHash.trim().toLowerCase() !== dbHash.trim().toLowerCase()) {
+            isTampered = true;
+        }
+    }
+
     let topClass = "";
     let statusBadge = "● VALID";
 
-    if (isRevoked) {
+    if (isTampered) {
+        topClass = "tampered";
+        statusBadge = "🚨 FORGERY DETECTED";
+    } else if (isRevoked) {
         topClass = "revoked";
         statusBadge = "● REVOKED";
     } else if (!passed) {
@@ -459,6 +497,35 @@ function displayFullCertificate(resultBox, cert, source) {
     const coVal = emission.co !== undefined ? `${emission.co} %` : "—";
     const hcVal = emission.hc !== undefined ? `${emission.hc} ppm` : "—";
 
+    let tamperBannerHtml = "";
+    if (isTampered) {
+        tamperBannerHtml = `
+          <div class="tamper-alert-box danger">
+            <span style="font-size: 24px; line-height: 1;">🚨</span>
+            <div>
+              <div style="font-size: 15px; font-weight: 800; text-transform: uppercase;">TAMPER DETECTED — FORGERY ALERT</div>
+              <div style="font-size: 12.5px; font-weight: 500; margin-top: 3px; color: #7f1d1d;">
+                The scanned QR code fingerprint does NOT match the official registry record. This certificate document has been altered or fabricated!
+              </div>
+            </div>
+          </div>
+        `;
+    } else if (tamperChecked) {
+        tamperBannerHtml = `
+          <div class="tamper-alert-box success">
+            <span style="font-size: 24px; line-height: 1;">🛡️</span>
+            <div>
+              <div style="font-size: 15px; font-weight: 800; text-transform: uppercase;">NO TAMPERING DETECTED — AUTHENTIC</div>
+              <div style="font-size: 12.5px; font-weight: 500; margin-top: 3px; color: #064e3b;">
+                Physical QR code cryptographic fingerprint matches the official registry record.
+              </div>
+            </div>
+          </div>
+        `;
+    } else {
+        tamperBannerHtml = "";
+    }
+
     const html = `
       <div class="cert-result-container">
         <!-- Top Status Banner -->
@@ -468,6 +535,8 @@ function displayFullCertificate(resultBox, cert, source) {
         </div>
 
         <div class="cert-result-body">
+          ${tamperBannerHtml}
+
           <!-- Vehicle & Owner Grid -->
           <div class="cert-grid-2">
             <div class="cert-data-item">
@@ -526,8 +595,8 @@ function displayFullCertificate(resultBox, cert, source) {
 
         <!-- Footer -->
         <div class="cert-result-footer">
-          <span>${cert.transactionHash ? '🛡️ Blockchain Secured (Ganache)' : 'ℹ️ Verified Record (' + source + ')'}</span>
-          <span style="font-weight: 700; color: #0f766e;">Authentic</span>
+          <span>🛡️ Verified Official Record</span>
+          <span style="font-weight: 700; color: ${isTampered ? '#b91c1c' : '#0f766e'};">${isTampered ? 'SUSPICIOUS' : 'Authentic'}</span>
         </div>
       </div>
     `;
